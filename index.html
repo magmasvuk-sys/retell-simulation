@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simulation</title>
+  <script src="https://cdn.retellai.com/web-client.js"></script>
+</head>
+
+<body style="text-align:center; font-family:sans-serif; padding:50px;">
+
+  <h1>Customer Service Simulation</h1>
+  <p>Click below to start your exercise</p>
+
+  <button onclick="startCall()" style="padding:15px 30px; font-size:18px;">
+    Start Simulation
+  </button>
+
+  <p id="status"></p>
+
+  <script>
+    async function startCall() {
+      document.getElementById("status").innerText = "Starting call...";
+
+      const res = await fetch("/api/start-call");
+      const data = await res.json();
+
+      const client = new RetellWebClient();
+
+      await client.startCall({
+        accessToken: data.access_token,
+        callId: data.call_id
+      });
+
+      document.getElementById("status").innerText = "Call started!";
+    }
+  </script>
+
+</body>
+</html>
