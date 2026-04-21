@@ -1,26 +1,81 @@
-<script>
-  async function startCall() {
-    const status = document.getElementById("status");
-    status.innerText = "Starting call...";
-
-    try {
-      const res = await fetch("/api/start-call");
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || data.message || JSON.stringify(data));
-      }
-
-      const client = new RetellWebClient();
-
-      await client.startCall({
-        accessToken: data.access_token
-      });
-
-      status.innerText = "Call started!";
-    } catch (err) {
-      status.innerText = "Error: " + err.message;
-      console.error(err);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Service Simulation</title>
+  <script src="https://cdn.retellai.com/web-client.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 20px;
+      text-align: center;
+      line-height: 1.5;
     }
-  }
-</script>
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 14px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+    }
+
+    #status {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Customer Service Simulation</h1>
+  <p>Click below to start your exercise.</p>
+
+  <button id="startBtn">Start Simulation</button>
+
+  <div id="status"></div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const startBtn = document.getElementById("startBtn");
+
+    async function startCall() {
+      statusEl.innerText = "Starting call...";
+      startBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/start-call");
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || data.message || JSON.stringify(data));
+        }
+
+        const client = new RetellWebClient();
+
+        await client.startCall({
+          accessToken: data.access_token
+        });
+
+        statusEl.innerText = "Call started! If prompted, allow microphone access.";
+      } catch (err) {
+        console.error(err);
+        statusEl.innerText = "Error: " + err.message;
+        startBtn.disabled = false;
+      }
+    }
+
+    startBtn.addEventListener("click", startCall);
+  </script>
+</body>
+</html>
