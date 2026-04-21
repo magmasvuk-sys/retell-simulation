@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Customer Service Simulation</title>
-  <script src="https://cdn.retellai.com/web-client.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,15 +13,6 @@
       text-align: center;
       line-height: 1.5;
     }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    p {
-      margin-bottom: 20px;
-    }
-
     button {
       padding: 14px 24px;
       font-size: 18px;
@@ -30,7 +20,6 @@
       border: none;
       border-radius: 8px;
     }
-
     #status {
       margin-top: 20px;
       white-space: pre-wrap;
@@ -42,12 +31,14 @@
   <p>Click below to start your exercise.</p>
 
   <button id="startBtn">Start Simulation</button>
-
   <div id="status"></div>
 
-  <script>
+  <script type="module">
+    import { RetellWebClient } from "https://esm.sh/retell-client-js-sdk";
+
     const statusEl = document.getElementById("status");
     const startBtn = document.getElementById("startBtn");
+    const client = new RetellWebClient();
 
     async function startCall() {
       statusEl.innerText = "Starting call...";
@@ -60,8 +51,6 @@
         if (!res.ok) {
           throw new Error(data.error || data.message || JSON.stringify(data));
         }
-
-        const client = new RetellWebClient();
 
         await client.startCall({
           accessToken: data.access_token
